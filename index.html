@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <title>chat</title>
+    <script src="https://coding96.ru/jquery.js"></script>
+</head>
+<body>
+    <div class="main">
+        <div class="head">
+            <div class="none"></div>
+            <div class="title">Чат</div>
+            <img src="" class="img">
+        </div>
+        <div id="chat">
+
+        </div>
+        <div class="send">
+            <div style="width: 100%;float:left;"><input type="text" id="name" placeholder="Введите ваше имя"></div>
+            <textarea id="text" placeholder="Введите ваше сообщение"></textarea>
+            <button id="send" onclick="send1()">Send</button>
+        </div>
+    </div>
+</body>
+
+<script>
+        function get(){
+            document.getElementById("chat").innerHTML = "";
+            var add = "";
+
+            $.ajax({
+                type:'get',
+                url:'get.php',
+                success: function(d){
+                    $("#chat").append(d);
+                    document.getElementById("chat").scrollTop = 9999;
+                    }
+                
+            })
+    }
+    function send1(){
+        var d = new Date();
+        var d1 = d.getHours() + ":" + d.getMinutes() + " " + d.getDate() + "/" + d.getMonth() + "/" + d.getFullYear();
+        var name = document.getElementById("name").value;
+        var text = document.getElementById("text").value;
+
+        if(name == "" || name == " "){
+            alert("Введите ваше имя/ник");
+        }
+        else if(text == "" || text == " "){
+            alert("Введите сообщение");
+        }else{
+        edd = new FormData()
+        
+        edd.append('date', d1)
+        edd.append('name', name)
+        edd.append('text', text)
+
+        $.ajax({
+        type:'post',
+        url:'send.php',
+        dataType:'text',
+        data: edd,
+        cache: false,
+        processData: false,
+        contentType: false,
+        success:function(){
+            alert("Отлично, ваше сообщение отправлено!");
+            get();
+        }
+    });
+    }
+    document.getElementById("text").value = "";
+    }
+setInterval(get, 3000);
+get();
+</script>
+</html>
